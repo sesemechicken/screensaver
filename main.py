@@ -40,6 +40,7 @@ class particle(pg.sprite.Sprite):
                 self.yacel = random.randrange(-5, -2)
                 self.xacel = random.randrange(-10, 10)
                 self.lifespan = 30
+                self.y = parent.rect.y+1
 
             # for all firework moving trails
             elif parent.type != "explode":
@@ -65,7 +66,7 @@ class particle(pg.sprite.Sprite):
             self.image.fill(self.parent.color)
             self.yacel = random.randrange(-100, 100)
             self.xacel = random.randrange(-100, 100)
-            # lifespan is dependant on the type
+            # lifespan is dependent on the type
             self.lifespan = random.randrange(20, 100)
             if parent.type == "standard":
                 self.lifespan /= 1.9
@@ -109,7 +110,7 @@ class firework(pg.sprite.Sprite):
         super().__init__()
         self.type = type
         self.x = random.randrange(0, screen.get_width())
-        self.y = screen.get_height()
+        self.y = screen.get_height()-10
         # killspace is the position to explode at unless fountain
         if type == "standard":
             self.width = 8
@@ -125,7 +126,6 @@ class firework(pg.sprite.Sprite):
             self.killspace = screen.get_height() // 6
             self.yacel = 10
             self.xacel = random.randrange(-1, 1)
-
         elif type == "fountain":
             self.width = 10
             self.height = 10
@@ -158,6 +158,7 @@ class firework(pg.sprite.Sprite):
         self.add(fireworkgroup)
 
     def update(self):
+
         # move to killspace and kill unless fountain
         if self.type != "fountain":
             self.rect.x += self.xacel
@@ -168,12 +169,14 @@ class firework(pg.sprite.Sprite):
                 self.kill()
             for _ in range(random.randrange(1, 3)):
                 particle(self, "streamer")
+
         # if fountain count timer and spray
         else:
             if self.timer != 0:
                 for _ in range(50):
                     particle(self, "streamer")
                 self.timer -= 1
+
             # if time's ran out
             else:
                 self.kill()
